@@ -1,20 +1,54 @@
 #!/usr/bin/python
 
 """
-Script used for
+Figuring out if you use undefined citations is easy.
 
+However, sometimes during refactor, you end up with less references because you forgot to reference the citation
+This is really bad because you mention something without citing => palgiarism
+Also, it reduces the value of your research.
+
+Ideally an IDE would do this, but haven't find a good one yet.
 
 Usage: ./executable.py *.tex *.bib
 """
 
 import sys
 import os
+import re
+
+def findCitationsInLine(line):
+    return re.findall(r"\\cite{([^}]*)}", line)
+
+def findDefinitionsInLine(line):
+    return re.findall(r"@[^{]+{([^,]+),", line)
 
 def getCitations(texFiles):
-    pass
+    ret = {}
+    for fileName in texFiles:
+        with open(fileName) as fd:
+            for line in fd:
+                citations = findCitationsInLine(line.rstrip("\n"))
+                for citation in citations:
+                    if not citation in ret:
+                        ret[citation] = 0
+                    ret[citation] += 1
+
+    return ret
+
 
 def getDefinitions(bibFiles):
-    pass
+    ret = {}
+    for fileName in bibFiles:
+        with open(fileName) as fd:
+            content = ''.join([line.rstrip("\n") for line in fd])
+
+            definitions = findDefinitionsInLine(content)
+            for definition in definitions:
+                if not definition in ret:
+                    ret[definition] = 0
+                ret[definition] += 1
+
+    return ret
 
 def main():
     texFiles = filter(lambda s: ".tex" in s, sys.argv)
@@ -27,6 +61,8 @@ def main():
     citations = getCitations(texFiles)
     definitions = getDefinitions(bibFiles)
 
+    print citations
+    print definitions
 
 
 if __name__ == "__main__":
