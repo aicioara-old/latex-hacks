@@ -2,7 +2,6 @@
 
 """
 Figuring out if you use undefined citations is easy.
-
 However, sometimes during refactor, you end up with less references because you forgot to reference the citation
 This is really bad because you mention something without citing => palgiarism
 Also, it reduces the value of your research.
@@ -15,7 +14,6 @@ Author: [Andrei Cioara](http://andrei.cioara.me)
 """
 
 import sys
-import os
 import re
 
 def _findCitationsInLine(line):
