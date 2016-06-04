@@ -16,10 +16,10 @@ import sys
 import os
 import re
 
-def findCitationsInLine(line):
+def _findCitationsInLine(line):
     return re.findall(r"\\cite{([^}]*)}", line)
 
-def findDefinitionsInLine(line):
+def _findDefinitionsInLine(line):
     return re.findall(r"@[^{]+{([^,]+),", line)
 
 def getCitations(texFiles):
@@ -27,7 +27,7 @@ def getCitations(texFiles):
     for fileName in texFiles:
         with open(fileName) as fd:
             for line in fd:
-                citations = findCitationsInLine(line.rstrip("\n"))
+                citations = _findCitationsInLine(line.rstrip("\n"))
                 for citation in citations:
                     if not citation in ret:
                         ret[citation] = 0
@@ -35,14 +35,13 @@ def getCitations(texFiles):
 
     return ret
 
-
 def getDefinitions(bibFiles):
     ret = {}
     for fileName in bibFiles:
         with open(fileName) as fd:
             content = ''.join([line.rstrip("\n") for line in fd])
 
-            definitions = findDefinitionsInLine(content)
+            definitions = _findDefinitionsInLine(content)
             for definition in definitions:
                 if not definition in ret:
                     ret[definition] = 0
@@ -61,8 +60,17 @@ def main():
     citations = getCitations(texFiles)
     definitions = getDefinitions(bibFiles)
 
-    print citations
-    print definitions
+    print "\n\n----------------------------------------------------------------"
+    print "%d/%d bibliography items cited" % (len(citations), len(definitions))
+
+    print
+    print "Definition keys not used:"
+    print
+
+    for definition in definitions:
+        if not definition in citations:
+            print definition
+    print "----------------------------------------------------------------"
 
 
 if __name__ == "__main__":
