@@ -10,6 +10,8 @@ Also, it reduces the value of your research.
 Ideally an IDE would do this, but haven't find a good one yet.
 
 Usage: ./executable.py *.tex *.bib
+
+Author: [Andrei Cioara](http://andrei.cioara.me)
 """
 
 import sys
